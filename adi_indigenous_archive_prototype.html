@@ -1,0 +1,826 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --earth: #2C2416;
+    --bark: #5C3D1E;
+    --ochre: #C4872A;
+    --ochre-light: #F2D49B;
+    --sage: #4A6741;
+    --sage-light: #C8D9B5;
+    --sky: #3A6E8C;
+    --sky-light: #C5DDE8;
+    --cream: #FAF5EC;
+    --warm-white: #FEF9F1;
+    --muted: #8A7D6A;
+    --border: rgba(92,61,30,0.15);
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  .app {
+    background: var(--warm-white);
+    font-family: var(--font-body);
+    min-height: 700px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .screen { display: none; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* NAV */
+  .nav {
+    background: var(--earth);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 22px;
+    color: var(--ochre-light);
+    letter-spacing: 0.04em;
+    cursor: pointer;
+  }
+  .nav-logo span { font-style: italic; font-size: 13px; color: var(--muted); margin-left: 6px; }
+  .nav-links { display: flex; gap: 6px; }
+  .nav-btn {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    font-family: var(--font-body);
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover, .nav-btn.active { background: rgba(196,135,42,0.25); color: var(--ochre-light); }
+  .nav-action {
+    background: var(--ochre);
+    border: none;
+    color: white;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .nav-action:hover { background: #d49330; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(160deg, #2C2416 0%, #3d2e0f 50%, #4a3818 100%);
+    padding: 52px 32px 44px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c4872a' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ochre);
+    margin-bottom: 12px;
+    position: relative;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: 44px;
+    color: var(--ochre-light);
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .hero h1 em { font-style: italic; color: white; }
+  .hero-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.55);
+    max-width: 440px;
+    margin: 0 auto 28px;
+    line-height: 1.6;
+    position: relative;
+  }
+  .search-bar {
+    position: relative;
+    max-width: 480px;
+    margin: 0 auto;
+    z-index: 1;
+  }
+  .search-bar input {
+    width: 100%;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(196,135,42,0.4);
+    border-radius: 30px;
+    padding: 12px 52px 12px 20px;
+    color: white;
+    font-family: var(--font-body);
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s;
+  }
+  .search-bar input::placeholder { color: rgba(255,255,255,0.35); }
+  .search-bar input:focus { background: rgba(255,255,255,0.15); border-color: var(--ochre); }
+  .search-bar button {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--ochre);
+    border: none;
+    border-radius: 22px;
+    padding: 6px 14px;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  /* FILTER PILLS */
+  .filter-row {
+    padding: 14px 24px;
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+    background: var(--cream);
+    overflow-x: auto;
+    flex-shrink: 0;
+  }
+  .pill {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .pill:hover { border-color: var(--ochre); color: var(--bark); }
+  .pill.active { background: var(--ochre); border-color: var(--ochre); color: white; }
+
+  /* GRID */
+  .content-area {
+    padding: 20px 24px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .card:hover { border-color: var(--ochre); box-shadow: 0 4px 16px rgba(92,61,30,0.1); transform: translateY(-1px); }
+  .card-thumb {
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+  }
+  .card-thumb.story { background: linear-gradient(135deg, #2C2416, #5C3D1E); }
+  .card-thumb.recipe { background: linear-gradient(135deg, #3A6741, #4A6741); }
+  .card-thumb.song { background: linear-gradient(135deg, #1E3A5C, #3A6E8C); }
+  .card-thumb.ceremony { background: linear-gradient(135deg, #5C2A1E, #8C4A3A); }
+  .card-thumb.language { background: linear-gradient(135deg, #4A3A1E, #8C7A3A); }
+  .card-body { padding: 12px; }
+  .card-type {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .card-type.story { color: var(--ochre); }
+  .card-type.recipe { color: var(--sage); }
+  .card-type.song { color: var(--sky); }
+  .card-type.ceremony { color: #8C4A3A; }
+  .card-type.language { color: #8C7A3A; }
+  .card-title { font-family: var(--font-display); font-size: 15px; color: var(--earth); line-height: 1.3; margin-bottom: 6px; }
+  .card-meta { font-size: 11px; color: var(--muted); display: flex; gap: 8px; }
+  .card-nation { font-weight: 500; }
+
+  /* DETAIL VIEW */
+  .detail-header {
+    background: var(--earth);
+    padding: 18px 24px 20px;
+    flex-shrink: 0;
+  }
+  .back-btn {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    font-size: 13px;
+    cursor: pointer;
+    padding: 4px 0;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-body);
+  }
+  .back-btn:hover { color: var(--ochre-light); }
+  .detail-type { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ochre); margin-bottom: 6px; }
+  .detail-title { font-family: var(--font-display); font-size: 26px; color: var(--ochre-light); line-height: 1.2; margin-bottom: 8px; }
+  .detail-subtitle { font-family: var(--font-display); font-style: italic; font-size: 15px; color: rgba(255,255,255,0.45); margin-bottom: 14px; }
+  .detail-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.55);
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+
+  .detail-body { padding: 20px 24px; overflow-y: auto; flex: 1; }
+  .detail-cols { display: grid; grid-template-columns: 1fr 220px; gap: 20px; }
+
+  .section-header { font-family: var(--font-display); font-size: 17px; color: var(--earth); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .section-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .story-text { font-size: 15px; line-height: 1.8; color: #3a3228; margin-bottom: 16px; }
+  .story-lang { background: var(--cream); border-left: 3px solid var(--ochre); padding: 12px 16px; border-radius: 0 8px 8px 0; margin-bottom: 20px; }
+  .lang-phrase { font-family: var(--font-display); font-size: 18px; color: var(--bark); font-style: italic; margin-bottom: 4px; }
+  .lang-translation { font-size: 13px; color: var(--muted); }
+  .lang-pronunciation { font-size: 12px; color: var(--sky); margin-top: 3px; }
+
+  .sidebar-card { background: var(--cream); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+  .sidebar-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .sidebar-item { font-size: 13px; color: var(--earth); display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+  .sidebar-item:last-child { border-bottom: none; }
+  .sidebar-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ochre); flex-shrink: 0; }
+
+  .audio-player { background: var(--earth); border-radius: 10px; padding: 14px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .play-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--ochre); border: none; cursor: pointer; color: white; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+  .play-btn:hover { background: #d49330; transform: scale(1.05); }
+  .audio-info { flex: 1; }
+  .audio-title { font-size: 12px; color: rgba(255,255,255,0.7); margin-bottom: 6px; }
+  .audio-bar { height: 3px; background: rgba(255,255,255,0.15); border-radius: 2px; position: relative; cursor: pointer; }
+  .audio-progress { height: 100%; width: 35%; background: var(--ochre); border-radius: 2px; position: relative; transition: width 0.5s; }
+  .audio-progress::after { content: ''; position: absolute; right: -4px; top: -3px; width: 9px; height: 9px; border-radius: 50%; background: var(--ochre-light); }
+  .audio-time { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 5px; }
+
+  .action-row { display: flex; gap: 8px; margin-top: 16px; }
+  .action-btn {
+    flex: 1;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 12px;
+    color: var(--bark);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    font-family: var(--font-body);
+  }
+  .action-btn:hover { border-color: var(--ochre); background: var(--cream); }
+  .action-btn.primary { background: var(--ochre); border-color: var(--ochre); color: white; }
+  .action-btn.primary:hover { background: #d49330; }
+
+  /* CONTRIBUTE */
+  .contribute-header { background: var(--earth); padding: 20px 24px; flex-shrink: 0; }
+  .contribute-header h2 { font-family: var(--font-display); font-size: 22px; color: var(--ochre-light); margin-bottom: 4px; }
+  .contribute-header p { font-size: 13px; color: rgba(255,255,255,0.45); }
+  .form-area { padding: 20px 24px; overflow-y: auto; flex: 1; }
+  .form-group { margin-bottom: 18px; }
+  .form-label { font-size: 12px; color: var(--bark); font-weight: 500; margin-bottom: 6px; display: block; letter-spacing: 0.02em; }
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--earth);
+    outline: none;
+    transition: all 0.2s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--ochre); box-shadow: 0 0 0 3px rgba(196,135,42,0.08); }
+  .form-textarea { min-height: 90px; resize: vertical; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .type-selector { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .type-option {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 6px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 11px;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .type-option:hover, .type-option.selected { border-color: var(--ochre); color: var(--bark); background: var(--cream); }
+  .type-option-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--cream);
+  }
+  .upload-zone:hover { border-color: var(--ochre); color: var(--bark); }
+  .submit-btn {
+    width: 100%;
+    background: var(--ochre);
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-family: var(--font-display);
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+  .submit-btn:hover { background: #d49330; }
+
+  /* LANGUAGE EXPLORE */
+  .lang-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-bottom: 20px; }
+  .lang-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .lang-card:hover { border-color: var(--ochre); transform: translateY(-1px); }
+  .lang-name { font-family: var(--font-display); font-size: 16px; color: var(--earth); margin-bottom: 2px; }
+  .lang-native { font-size: 12px; color: var(--ochre); font-style: italic; margin-bottom: 6px; }
+  .lang-count { font-size: 11px; color: var(--muted); }
+  .vitality-bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 8px; }
+  .vitality-fill { height: 100%; border-radius: 2px; }
+
+  /* SUCCESS */
+  .success-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    text-align: center;
+    flex: 1;
+    background: var(--warm-white);
+  }
+  .success-icon { font-size: 48px; margin-bottom: 16px; }
+  .success-title { font-family: var(--font-display); font-size: 24px; color: var(--earth); margin-bottom: 8px; }
+  .success-sub { font-size: 14px; color: var(--muted); max-width: 300px; line-height: 1.6; margin-bottom: 24px; }
+
+  /* PLAYING ANIMATION */
+  .playing .audio-progress { animation: playAnim 4s linear infinite; }
+  @keyframes playAnim { from { width: 35%; } to { width: 95%; } }
+
+  .fade-in { animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+
+<div class="app" id="app">
+
+  <!-- SCREEN: HOME -->
+  <div class="screen active fade-in" id="screen-home">
+    <div class="nav">
+      <div class="nav-logo" onclick="go('home')">adi <span>adisoke</span></div>
+      <div class="nav-links">
+        <button class="nav-btn active" onclick="go('home')">Explore</button>
+        <button class="nav-btn" onclick="go('languages')">Languages</button>
+        <button class="nav-btn" onclick="go('contribute')">Contribute</button>
+      </div>
+      <button class="nav-action">Sign In</button>
+    </div>
+    <div class="hero">
+      <div class="hero-eyebrow">Preserve · Access · Activate</div>
+      <h1>Living <em>knowledge</em>,<br>not just words</h1>
+      <p class="hero-sub">adi archives the full fabric of indigenous culture — stories, recipes, ceremonies, and language — kept alive by the communities who hold them.</p>
+      <div class="search-bar">
+        <input type="text" placeholder="Search stories, recipes, songs, language..." id="search-input" onkeydown="if(event.key==='Enter')go('home')"/>
+        <button onclick="go('home')">Search</button>
+      </div>
+    </div>
+    <div class="filter-row">
+      <div class="pill active" onclick="filterPill(this,'all')">All</div>
+      <div class="pill" onclick="filterPill(this,'story')">📖 Stories</div>
+      <div class="pill" onclick="filterPill(this,'recipe')">🍲 Recipes</div>
+      <div class="pill" onclick="filterPill(this,'song')">🎵 Songs & Music</div>
+      <div class="pill" onclick="filterPill(this,'ceremony')">🔥 Ceremony</div>
+      <div class="pill" onclick="filterPill(this,'language')">💬 Language</div>
+    </div>
+    <div class="content-area">
+      <div class="section-label">Recently added</div>
+      <div class="card-grid" id="card-grid">
+        <div class="card" onclick="go('detail','story')">
+          <div class="card-thumb story">📖</div>
+          <div class="card-body">
+            <div class="card-type story">Story</div>
+            <div class="card-title">How Raven Stole the Light</div>
+            <div class="card-meta"><span class="card-nation">Haida</span><span>·</span><span>Oral</span></div>
+          </div>
+        </div>
+        <div class="card" onclick="go('detail','recipe')">
+          <div class="card-thumb recipe">🍲</div>
+          <div class="card-body">
+            <div class="card-type recipe">Recipe</div>
+            <div class="card-title">Three Sisters Harvest Stew</div>
+            <div class="card-meta"><span class="card-nation">Haudenosaunee</span><span>·</span><span>Seasonal</span></div>
+          </div>
+        </div>
+        <div class="card" onclick="go('detail','song')">
+          <div class="card-thumb song">🎵</div>
+          <div class="card-body">
+            <div class="card-type song">Song</div>
+            <div class="card-title">Morning Water Song</div>
+            <div class="card-meta"><span class="card-nation">Anishinaabe</span><span>·</span><span>Ceremonial</span></div>
+          </div>
+        </div>
+        <div class="card" onclick="go('detail','story')">
+          <div class="card-thumb ceremony">🔥</div>
+          <div class="card-body">
+            <div class="card-type ceremony">Ceremony</div>
+            <div class="card-title">Sweat Lodge Teachings</div>
+            <div class="card-meta"><span class="card-nation">Lakota</span><span>·</span><span>Healing</span></div>
+          </div>
+        </div>
+        <div class="card" onclick="go('detail','story')">
+          <div class="card-thumb language">💬</div>
+          <div class="card-body">
+            <div class="card-type language">Language</div>
+            <div class="card-title">Seasons in Ojibwe</div>
+            <div class="card-meta"><span class="card-nation">Ojibwe</span><span>·</span><span>86 phrases</span></div>
+          </div>
+        </div>
+        <div class="card" onclick="go('detail','recipe')">
+          <div class="card-thumb recipe">🍲</div>
+          <div class="card-body">
+            <div class="card-type recipe">Recipe</div>
+            <div class="card-title">Bannock Bread</div>
+            <div class="card-meta"><span class="card-nation">Métis</span><span>·</span><span>Traditional</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="section-label">Featured nations</div>
+      <div class="lang-grid">
+        <div class="lang-card" onclick="go('languages')">
+          <div class="lang-name">Ojibwe</div>
+          <div class="lang-native">Anishinaabemowin</div>
+          <div class="lang-count">214 entries</div>
+          <div class="vitality-bar"><div class="vitality-fill" style="width:60%;background:var(--sage)"></div></div>
+        </div>
+        <div class="lang-card" onclick="go('languages')">
+          <div class="lang-name">Cree</div>
+          <div class="lang-native">Nêhiyawêwin</div>
+          <div class="lang-count">189 entries</div>
+          <div class="vitality-bar"><div class="vitality-fill" style="width:75%;background:var(--ochre)"></div></div>
+        </div>
+        <div class="lang-card" onclick="go('languages')">
+          <div class="lang-name">Haida</div>
+          <div class="lang-native">X̲aat Kíl</div>
+          <div class="lang-count">97 entries</div>
+          <div class="vitality-bar"><div class="vitality-fill" style="width:30%;background:#C4542A)"></div></div>
+        </div>
+        <div class="lang-card" onclick="go('languages')">
+          <div class="lang-name">Mohawk</div>
+          <div class="lang-native">Kanien'kéha</div>
+          <div class="lang-count">143 entries</div>
+          <div class="vitality-bar"><div class="vitality-fill" style="width:55%;background:var(--sky)"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: DETAIL -->
+  <div class="screen fade-in" id="screen-detail">
+    <div class="nav">
+      <div class="nav-logo" onclick="go('home')">adi <span>adisoke</span></div>
+      <div class="nav-links">
+        <button class="nav-btn" onclick="go('home')">Explore</button>
+        <button class="nav-btn" onclick="go('languages')">Languages</button>
+        <button class="nav-btn" onclick="go('contribute')">Contribute</button>
+      </div>
+      <button class="nav-action">Sign In</button>
+    </div>
+    <div class="detail-header">
+      <button class="back-btn" onclick="go('home')">← Back to explore</button>
+      <div class="detail-type" id="detail-type-label">Story</div>
+      <div class="detail-title" id="detail-title-label">How Raven Stole the Light</div>
+      <div class="detail-subtitle" id="detail-subtitle-label">Haida oral tradition, recorded 2021</div>
+      <div class="detail-tags">
+        <div class="tag">Haida</div>
+        <div class="tag">British Columbia</div>
+        <div class="tag">Creation</div>
+        <div class="tag">Oral History</div>
+        <div class="tag">Ancestral</div>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-cols">
+        <div>
+          <div class="section-header">Audio recording</div>
+          <div class="audio-player" id="audio-player" onclick="togglePlay()">
+            <button class="play-btn" id="play-btn">▶</button>
+            <div class="audio-info">
+              <div class="audio-title" id="audio-title">Told by Elder Mary Wilson — Haida Gwaii</div>
+              <div class="audio-bar"><div class="audio-progress" id="audio-prog"></div></div>
+              <div class="audio-time" id="audio-time-label">2:14 / 8:47</div>
+            </div>
+          </div>
+          <div class="section-header" style="margin-top:16px">The story</div>
+          <div id="detail-content">
+            <p class="story-text">In the beginning, the world was dark. Raven, always curious, always hungry, heard that a great chief hoarded all the light in three boxes hidden in his house deep in the forest.</p>
+            <div class="story-lang">
+              <div class="lang-phrase">Jáadee k'ínid'áan</div>
+              <div class="lang-pronunciation">yaa-dee k'ee-nee-daan</div>
+              <div class="lang-translation">"The light is coming" — a phrase spoken at dawn</div>
+            </div>
+            <p class="story-text">Raven transformed himself into a spruce needle and floated down the river until the chief's daughter swallowed him with her water. She became pregnant, and Raven was born into the house, disguised as a grandchild.</p>
+            <div class="story-lang">
+              <div class="lang-phrase">Yáahl — K'aayyángs</div>
+              <div class="lang-pronunciation">yahl — k'aay-yangs</div>
+              <div class="lang-translation">"Raven — the transformer, the trickster"</div>
+            </div>
+            <p class="story-text">The child cried and cried until the old chief relented and gave him the first box to play with — and in a flash, Raven took his true form, burst through the smoke hole, and released the stars across the sky.</p>
+          </div>
+          <div class="action-row">
+            <button class="action-btn" onclick="go('contribute')">+ Add variation</button>
+            <button class="action-btn">Share</button>
+            <button class="action-btn primary">Save offline</button>
+          </div>
+        </div>
+        <div>
+          <div class="section-header">Metadata</div>
+          <div class="sidebar-card">
+            <div class="sidebar-label">Nation & region</div>
+            <div class="sidebar-item"><span class="sidebar-dot"></span>Haida Nation</div>
+            <div class="sidebar-item"><span class="sidebar-dot"></span>Haida Gwaii, BC</div>
+          </div>
+          <div class="sidebar-card">
+            <div class="sidebar-label">Contributor</div>
+            <div class="sidebar-item"><span class="sidebar-dot"></span>Elder Mary Wilson</div>
+            <div class="sidebar-item"><span class="sidebar-dot"></span>Recorded 2021</div>
+            <div class="sidebar-item"><span class="sidebar-dot"></span>Verified by council</div>
+          </div>
+          <div class="sidebar-card">
+            <div class="sidebar-label">Languages present</div>
+            <div class="sidebar-item"><span class="sidebar-dot"></span>X̲aat Kíl (Haida)</div>
+            <div class="sidebar-item"><span class="sidebar-dot"></span>English translation</div>
+          </div>
+          <div class="sidebar-card">
+            <div class="sidebar-label">Related entries</div>
+            <div class="sidebar-item" style="cursor:pointer;color:var(--sky)"><span class="sidebar-dot" style="background:var(--sky)"></span>Raven Songs (3)</div>
+            <div class="sidebar-item" style="cursor:pointer;color:var(--sky)"><span class="sidebar-dot" style="background:var(--sky)"></span>Cree Trickster cycle</div>
+            <div class="sidebar-item" style="cursor:pointer;color:var(--sky)"><span class="sidebar-dot" style="background:var(--sky)"></span>Haida Clan Crests</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: CONTRIBUTE -->
+  <div class="screen fade-in" id="screen-contribute">
+    <div class="nav">
+      <div class="nav-logo" onclick="go('home')">adi <span>adisoke</span></div>
+      <div class="nav-links">
+        <button class="nav-btn" onclick="go('home')">Explore</button>
+        <button class="nav-btn" onclick="go('languages')">Languages</button>
+        <button class="nav-btn active" onclick="go('contribute')">Contribute</button>
+      </div>
+      <button class="nav-action">Sign In</button>
+    </div>
+    <div class="contribute-header">
+      <h2>Add to the archive</h2>
+      <p>Share knowledge with your community and future generations</p>
+    </div>
+    <div class="form-area">
+      <div class="form-group">
+        <label class="form-label">Type of entry</label>
+        <div class="type-selector">
+          <div class="type-option selected" onclick="selectType(this)"><span class="type-option-icon">📖</span>Story</div>
+          <div class="type-option" onclick="selectType(this)"><span class="type-option-icon">🍲</span>Recipe</div>
+          <div class="type-option" onclick="selectType(this)"><span class="type-option-icon">🎵</span>Song</div>
+          <div class="type-option" onclick="selectType(this)"><span class="type-option-icon">🔥</span>Ceremony</div>
+          <div class="type-option" onclick="selectType(this)"><span class="type-option-icon">💬</span>Language</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Title</label>
+          <input type="text" class="form-input" placeholder="Name of this entry..." />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nation / community</label>
+          <select class="form-select">
+            <option>Select nation...</option>
+            <option>Anishinaabe</option>
+            <option>Cree</option>
+            <option>Haida</option>
+            <option>Haudenosaunee</option>
+            <option>Lakota</option>
+            <option>Métis</option>
+            <option>Ojibwe</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description / text content</label>
+        <textarea class="form-textarea" placeholder="Write or paste the story, recipe, song lyrics, or description..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Indigenous language phrases (optional)</label>
+        <input type="text" class="form-input" placeholder="Include any words or phrases in the original language..." />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Audio or video recording</label>
+        <div class="upload-zone">⬆ Drag & drop a file, or tap to browse<br><span style="font-size:11px;margin-top:4px;display:block">MP3, MP4, WAV, MOV — up to 500MB</span></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Access level</label>
+        <select class="form-select">
+          <option>Public — visible to all</option>
+          <option>Community only — visible to registered members</option>
+          <option>Elder-reviewed — requires approval before publishing</option>
+          <option>Restricted — archived but not publicly visible</option>
+        </select>
+      </div>
+      <button class="submit-btn" onclick="go('success')">Submit for review →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN: LANGUAGES -->
+  <div class="screen fade-in" id="screen-languages">
+    <div class="nav">
+      <div class="nav-logo" onclick="go('home')">adi <span>adisoke</span></div>
+      <div class="nav-links">
+        <button class="nav-btn" onclick="go('home')">Explore</button>
+        <button class="nav-btn active" onclick="go('languages')">Languages</button>
+        <button class="nav-btn" onclick="go('contribute')">Contribute</button>
+      </div>
+      <button class="nav-action">Sign In</button>
+    </div>
+    <div style="background:var(--earth);padding:18px 24px;flex-shrink:0">
+      <button class="back-btn" onclick="go('home')">← Back</button>
+      <div style="font-family:var(--font-display);font-size:22px;color:var(--ochre-light);margin-bottom:4px">Language families</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.4)">Browse living knowledge by language and nation</div>
+    </div>
+    <div class="content-area">
+      <div class="section-label">All nations in archive</div>
+      <div class="lang-grid">
+        <div class="lang-card" onclick="go('detail','story')">
+          <div class="lang-name">Ojibwe</div>
+          <div class="lang-native">Anishinaabemowin</div>
+          <div class="lang-count">214 entries</div>
+          <div class="vitality-bar"><div class="vitality-fill" style="width:60%;background:var(--sage)"></div></div>
+        </div>
+        <div class="lang-card" onclick="go('detail','story')">
+          <div class="lang-name">Cree</div>
+          <div class="lang-native">Nêhiyawêwin</div>
+          <div class="lang-count">189 entries</div>
+          <div class="vitality-bar"><div class="vitality-fill" style="width:75%;background:var(--ochre)"></div></div>
+        </div>
+        <div class="lang-card" onclick="go('detail','story')">
+          <div class="lang-name">Haida</div>
+          <div class="lang-native">X̲aat Kíl</div>
+          <div class="lang-count">97 entries</div>
+          <div class="vitality-bar"><div class="vitality-fill" style="width:25%;background:#C4542A"></div></div>
+        </div>
+        <div class="lang-card" onclick="go('detail','story')">
+          <div class="lang-name">Mohawk</div>
+          <div class="lang-native">Kanien'kéha</div>
+          <div class="lang-count">143 entries</div>
+          <div class="vitality-bar"><div class="vitality-fill" style="width:50%;background:var(--sky)"></div></div>
+        </div>
+        <div class="lang-card" onclick="go('detail','story')">
+          <div class="lang-name">Blackfoot</div>
+          <div class="lang-native">Siksiká</div>
+          <div class="lang-count">68 entries</div>
+          <div class="vitality-bar"><div class="vitality-fill" style="width:40%;background:var(--ochre)"></div></div>
+        </div>
+        <div class="lang-card" onclick="go('detail','song')">
+          <div class="lang-name">Inuktitut</div>
+          <div class="lang-native">ᐃᓄᒃᑎᑐᑦ</div>
+          <div class="lang-count">112 entries</div>
+          <div class="vitality-bar"><div class="vitality-fill" style="width:65%;background:var(--sky)"></div></div>
+        </div>
+        <div class="lang-card" onclick="go('detail','story')">
+          <div class="lang-name">Dene</div>
+          <div class="lang-native">Dene Zhie</div>
+          <div class="lang-count">55 entries</div>
+          <div class="vitality-bar"><div class="vitality-fill" style="width:35%;background:var(--sage)"></div></div>
+        </div>
+        <div class="lang-card" onclick="go('contribute')">
+          <div class="lang-name" style="color:var(--muted)">Your language?</div>
+          <div class="lang-native" style="color:var(--border)">Not listed</div>
+          <div class="lang-count">+ Add entries</div>
+          <div class="vitality-bar"><div class="vitality-fill" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="sidebar-card" style="background:var(--cream)">
+        <div class="sidebar-label">About language vitality</div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6">The bar beneath each language indicates relative vitality — the proportion of fluent speakers in relation to the community. adi prioritizes endangered languages for expanded archiving support.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: SUCCESS -->
+  <div class="screen fade-in" id="screen-success">
+    <div class="nav">
+      <div class="nav-logo" onclick="go('home')">adi <span>adisoke</span></div>
+      <div class="nav-links">
+        <button class="nav-btn" onclick="go('home')">Explore</button>
+        <button class="nav-btn" onclick="go('languages')">Languages</button>
+        <button class="nav-btn" onclick="go('contribute')">Contribute</button>
+      </div>
+      <button class="nav-action">Sign In</button>
+    </div>
+    <div class="success-screen">
+      <div class="success-icon">🌿</div>
+      <div class="success-title">Submitted for review</div>
+      <p class="success-sub">Your contribution has been received. An elder or community reviewer will verify and publish your entry — thank you for helping the archive grow.</p>
+      <div style="display:flex;gap:10px">
+        <button class="action-btn" onclick="go('home')" style="min-width:140px">← Explore archive</button>
+        <button class="action-btn primary" onclick="go('contribute')" style="min-width:140px">Add another</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  var isPlaying = false;
+
+  function go(screen, type) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    var target = document.getElementById('screen-' + screen);
+    if (target) { target.classList.add('active'); target.classList.remove('fade-in'); void target.offsetWidth; target.classList.add('fade-in'); }
+    if (screen === 'detail' && type) {
+      var titles = { story: ['Story','How Raven Stole the Light','Haida oral tradition, recorded 2021'], recipe: ['Recipe','Three Sisters Harvest Stew','Haudenosaunee — seasonal tradition'], song: ['Song','Morning Water Song','Anishinaabe — ceremonial, sunrise'] };
+      var t = titles[type] || titles.story;
+      document.getElementById('detail-type-label').textContent = t[0];
+      document.getElementById('detail-title-label').textContent = t[1];
+      document.getElementById('detail-subtitle-label').textContent = t[2];
+      if (type === 'recipe') {
+        document.getElementById('detail-content').innerHTML = '<p class="story-text">The Three Sisters — corn, beans, and squash — are the heart of Haudenosaunee agriculture and cuisine. This stew is prepared each harvest season, a practice passed down over generations.</p><div class="story-lang"><div class="lang-phrase">Ohén:ton Karihwatéhkwen</div><div class="lang-pronunciation">oh-en-ton ga-li-wah-teh-gwen</div><div class="lang-translation">"Words that come before all else" — the Thanksgiving Address, spoken before preparing food</div></div><p class="story-text">Ingredients: dried white corn (soaked overnight), kidney beans, butternut squash, sunflower oil, wild onion, dried cedar tips for flavouring. Simmer slowly for four hours. The corn should be hominy-soft before the squash is added.</p>';
+        document.getElementById('audio-title').textContent = 'Demonstrated by Rose Hill — Six Nations, ON';
+      } else if (type === 'song') {
+        document.getElementById('detail-content').innerHTML = '<p class="story-text">The Morning Water Song is sung at the water\'s edge at dawn. It is a ceremony of gratitude and connection, acknowledging the spirit of water before the day begins.</p><div class="story-lang"><div class="lang-phrase">Nibi — Mii dash gaa-izhi-zaagi\'iding</div><div class="lang-pronunciation">ni-bee — mee dash ga-ee-zhee-za-gee-ding</div><div class="lang-translation">"Water — and thus it flows with love"</div></div><p class="story-text">The song is traditionally sung by women at sunrise, accompanied by a hand drum. It has 12 verses, each honouring a different body of water. This recording includes the first four verses with full translation.</p>';
+        document.getElementById('audio-title').textContent = 'Sung by Grandmother Rose Swifthawk — Manitoulin Island';
+      }
+    }
+    if (screen !== 'detail') { isPlaying = false; var ap = document.getElementById('audio-player'); if(ap) ap.classList.remove('playing'); var pb = document.getElementById('play-btn'); if(pb) pb.textContent='▶'; }
+  }
+
+  function togglePlay() {
+    isPlaying = !isPlaying;
+    var ap = document.getElementById('audio-player');
+    var pb = document.getElementById('play-btn');
+    if (isPlaying) { ap.classList.add('playing'); pb.textContent = '■'; } 
+    else { ap.classList.remove('playing'); pb.textContent = '▶'; }
+  }
+
+  function filterPill(el, type) {
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function selectType(el) {
+    document.querySelectorAll('.type-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+</script>
