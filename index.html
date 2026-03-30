@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -423,6 +424,254 @@
 
   .fade-in { animation: fadeIn 0.3s ease; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── LEARN SCREEN ── */
+  .learn-header {
+    background: var(--earth);
+    padding: 20px 24px 22px;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .learn-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c4872a' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 1;
+  }
+  .learn-header-inner { position: relative; }
+  .learn-header-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+  .learn-header h2 { font-family: var(--font-display); font-size: 22px; color: var(--ochre-light); margin-bottom: 4px; }
+  .learn-header p { font-size: 13px; color: rgba(255,255,255,0.42); max-width: 420px; line-height: 1.5; }
+  .learn-mode-tabs { display: flex; gap: 6px; }
+  .learn-tab {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    font-family: var(--font-body);
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .learn-tab:hover { background: rgba(196,135,42,0.15); color: var(--ochre-light); }
+  .learn-tab.active { background: rgba(196,135,42,0.25); border-color: rgba(196,135,42,0.4); color: var(--ochre-light); }
+  .learn-progress-row { display: flex; align-items: center; gap: 12px; }
+  .learn-progress-label { font-size: 11px; color: rgba(255,255,255,0.35); white-space: nowrap; }
+  .learn-progress-track { flex: 1; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; }
+  .learn-progress-fill { height: 100%; border-radius: 2px; background: var(--ochre); width: 28%; transition: width 0.6s ease; }
+  .learn-xp { font-size: 11px; color: var(--ochre); white-space: nowrap; }
+
+  .learn-body { display: flex; flex: 1; overflow: hidden; }
+  .learn-sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    background: var(--cream);
+    overflow-y: auto;
+    padding: 16px 0;
+  }
+  .learn-sidebar-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding: 0 16px; margin-bottom: 8px; font-weight: 500; }
+  .learn-module {
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .learn-module:hover { background: rgba(196,135,42,0.06); }
+  .learn-module.active { border-left-color: var(--ochre); background: rgba(196,135,42,0.08); }
+  .learn-module-icon { font-size: 16px; flex-shrink: 0; }
+  .learn-module-info { flex: 1; min-width: 0; }
+  .learn-module-title { font-size: 13px; color: var(--earth); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .learn-module-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .learn-module-check { font-size: 12px; color: var(--sage); flex-shrink: 0; }
+
+  .learn-main { flex: 1; overflow-y: auto; padding: 20px 24px; }
+
+  /* Activity cards */
+  .activity-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 14px;
+  }
+  .activity-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .activity-badge {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-weight: 500;
+  }
+  .activity-badge.vocab { background: rgba(58,110,140,0.12); color: var(--sky); }
+  .activity-badge.quiz { background: rgba(74,103,65,0.12); color: var(--sage); }
+  .activity-badge.convo { background: rgba(196,135,42,0.12); color: var(--bark); }
+  .activity-badge.story { background: rgba(92,61,30,0.1); color: var(--bark); }
+  .activity-title { font-family: var(--font-display); font-size: 16px; color: var(--earth); }
+  .activity-source { font-size: 11px; color: var(--muted); margin-left: auto; font-style: italic; }
+
+  /* Flashcard */
+  .flashcard-wrap { perspective: 800px; margin-bottom: 14px; cursor: pointer; }
+  .flashcard {
+    width: 100%;
+    height: 120px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease;
+  }
+  .flashcard.flipped { transform: rotateY(180deg); }
+  .fc-face {
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    padding: 16px;
+  }
+  .fc-front { background: var(--earth); }
+  .fc-back { background: var(--cream); border: 1px solid var(--border); transform: rotateY(180deg); }
+  .fc-phrase { font-family: var(--font-display); font-size: 22px; color: var(--ochre-light); font-style: italic; margin-bottom: 4px; }
+  .fc-hint { font-size: 11px; color: rgba(255,255,255,0.35); }
+  .fc-translation { font-family: var(--font-display); font-size: 18px; color: var(--earth); margin-bottom: 4px; }
+  .fc-pronunciation { font-size: 12px; color: var(--sky); }
+  .fc-context { font-size: 11px; color: var(--muted); margin-top: 6px; text-align: center; }
+  .fc-nav { display: flex; gap: 8px; align-items: center; justify-content: center; }
+  .fc-nav button {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 12px;
+    color: var(--bark);
+    cursor: pointer;
+    font-family: var(--font-body);
+    transition: all 0.2s;
+  }
+  .fc-nav button:hover { border-color: var(--ochre); }
+  .fc-nav .fc-knew { background: var(--sage); border-color: var(--sage); color: white; }
+  .fc-nav .fc-knew:hover { background: #3a5632; }
+  .fc-counter { font-size: 12px; color: var(--muted); }
+
+  /* Quiz */
+  .quiz-question { font-size: 15px; color: var(--earth); line-height: 1.6; margin-bottom: 14px; font-style: italic; }
+  .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  .quiz-opt {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--earth);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    font-family: var(--font-body);
+  }
+  .quiz-opt:hover { border-color: var(--ochre); background: rgba(196,135,42,0.06); }
+  .quiz-opt.correct { border-color: var(--sage); background: rgba(74,103,65,0.1); color: var(--sage); }
+  .quiz-opt.wrong { border-color: #C4542A; background: rgba(196,84,42,0.08); color: #8C3A1E; }
+  .quiz-feedback { font-size: 13px; line-height: 1.6; color: var(--muted); padding: 10px 14px; background: var(--cream); border-radius: 8px; display: none; }
+  .quiz-feedback.visible { display: block; }
+  .quiz-feedback strong { color: var(--earth); }
+
+  /* AI Conversation */
+  .convo-context { font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 14px; padding: 10px 14px; background: var(--cream); border-radius: 8px; border-left: 3px solid var(--ochre); }
+  .convo-thread { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+  .msg { max-width: 85%; padding: 10px 14px; border-radius: 10px; font-size: 13px; line-height: 1.6; }
+  .msg.ai { background: var(--earth); color: rgba(255,255,255,0.85); align-self: flex-start; border-bottom-left-radius: 3px; }
+  .msg.user { background: rgba(196,135,42,0.15); color: var(--earth); align-self: flex-end; border-bottom-right-radius: 3px; border: 1px solid rgba(196,135,42,0.2); }
+  .msg .msg-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; opacity: 0.5; }
+  .msg .msg-lang { font-family: var(--font-display); font-style: italic; font-size: 15px; color: var(--ochre-light); display: block; margin-bottom: 2px; }
+  .convo-input-row { display: flex; gap: 8px; }
+  .convo-input {
+    flex: 1;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 14px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--earth);
+    outline: none;
+    transition: all 0.2s;
+  }
+  .convo-input:focus { border-color: var(--ochre); }
+  .convo-send {
+    background: var(--ochre);
+    border: none;
+    border-radius: 8px;
+    padding: 9px 16px;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .convo-send:hover { background: #d49330; }
+  .typing-indicator { display: flex; gap: 4px; align-items: center; padding: 10px 14px; background: var(--earth); border-radius: 10px; border-bottom-left-radius: 3px; align-self: flex-start; width: fit-content; }
+  .typing-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.4); animation: typingBounce 1.2s ease infinite; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typingBounce { 0%,80%,100% { transform: translateY(0); opacity: 0.4; } 40% { transform: translateY(-5px); opacity: 1; } }
+
+  /* Story recall */
+  .recall-passage { font-family: var(--font-display); font-size: 15px; line-height: 1.9; color: #3a3228; margin-bottom: 16px; }
+  .recall-blank {
+    display: inline-block;
+    background: var(--cream);
+    border: 1px dashed var(--ochre);
+    border-radius: 4px;
+    min-width: 80px;
+    height: 22px;
+    vertical-align: middle;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 14px;
+    color: var(--bark);
+    padding: 0 8px;
+  }
+  .recall-blank.filled { background: rgba(196,135,42,0.1); border-style: solid; }
+  .recall-blank.correct { background: rgba(74,103,65,0.1); border-color: var(--sage); color: var(--sage); }
+  .recall-word-bank { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .word-chip {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 4px 12px;
+    font-size: 13px;
+    color: var(--earth);
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-style: italic;
+    transition: all 0.2s;
+  }
+  .word-chip:hover { border-color: var(--ochre); background: var(--cream); }
+  .word-chip.used { opacity: 0.35; pointer-events: none; }
+  .check-btn {
+    background: var(--ochre);
+    border: none;
+    border-radius: 8px;
+    padding: 9px 20px;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    transition: all 0.2s;
+  }
+  .check-btn:hover { background: #d49330; }
 </style>
 </head>
 <body>
@@ -435,6 +684,7 @@
       <div class="nav-links">
         <button class="nav-btn active" onclick="go('home')">Explore</button>
         <button class="nav-btn" onclick="go('languages')">Languages</button>
+        <button class="nav-btn" onclick="go('learn')">Learn</button>
         <button class="nav-btn" onclick="go('contribute')">Contribute</button>
       </div>
       <button class="nav-action">Sign In</button>
@@ -545,6 +795,7 @@
       <div class="nav-links">
         <button class="nav-btn" onclick="go('home')">Explore</button>
         <button class="nav-btn" onclick="go('languages')">Languages</button>
+        <button class="nav-btn" onclick="go('learn')">Learn</button>
         <button class="nav-btn" onclick="go('contribute')">Contribute</button>
       </div>
       <button class="nav-action">Sign In</button>
@@ -632,6 +883,7 @@
       <div class="nav-links">
         <button class="nav-btn" onclick="go('home')">Explore</button>
         <button class="nav-btn" onclick="go('languages')">Languages</button>
+        <button class="nav-btn" onclick="go('learn')">Learn</button>
         <button class="nav-btn active" onclick="go('contribute')">Contribute</button>
       </div>
       <button class="nav-action">Sign In</button>
@@ -687,7 +939,7 @@
         <select class="form-select">
           <option>Public — visible to all</option>
           <option>Community only — visible to registered members</option>
-          <option>Elder-reviewed — requires approval before publishing</option>
+          <option>Elder-reviewed — requires approval before publishing</button>
           <option>Restricted — archived but not publicly visible</option>
         </select>
       </div>
@@ -702,6 +954,7 @@
       <div class="nav-links">
         <button class="nav-btn" onclick="go('home')">Explore</button>
         <button class="nav-btn active" onclick="go('languages')">Languages</button>
+        <button class="nav-btn" onclick="go('learn')">Learn</button>
         <button class="nav-btn" onclick="go('contribute')">Contribute</button>
       </div>
       <button class="nav-action">Sign In</button>
@@ -777,6 +1030,7 @@
       <div class="nav-links">
         <button class="nav-btn" onclick="go('home')">Explore</button>
         <button class="nav-btn" onclick="go('languages')">Languages</button>
+        <button class="nav-btn" onclick="go('learn')">Learn</button>
         <button class="nav-btn" onclick="go('contribute')">Contribute</button>
       </div>
       <button class="nav-action">Sign In</button>
@@ -788,6 +1042,226 @@
       <div style="display:flex;gap:10px">
         <button class="action-btn" onclick="go('home')" style="min-width:140px">← Explore archive</button>
         <button class="action-btn primary" onclick="go('contribute')" style="min-width:140px">Add another</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: LEARN -->
+  <div class="screen fade-in" id="screen-learn">
+    <div class="nav">
+      <div class="nav-logo" onclick="go('home')">adi <span>adisoke</span></div>
+      <div class="nav-links">
+        <button class="nav-btn" onclick="go('home')">Explore</button>
+        <button class="nav-btn" onclick="go('languages')">Languages</button>
+        <button class="nav-btn active" onclick="go('learn')">Learn</button>
+        <button class="nav-btn" onclick="go('contribute')">Contribute</button>
+      </div>
+      <button class="nav-action">Sign In</button>
+    </div>
+
+    <div class="learn-header">
+      <div class="learn-header-inner">
+        <div class="learn-header-top">
+          <div>
+            <h2>Active learning</h2>
+            <p>The archive becomes your teacher — AI draws from archived stories, recipes, and songs to build language and cultural fluency.</p>
+          </div>
+          <div class="learn-mode-tabs">
+            <button class="learn-tab active" onclick="switchTab(this,'vocab')">Vocabulary</button>
+            <button class="learn-tab" onclick="switchTab(this,'quiz')">Cultural quiz</button>
+            <button class="learn-tab" onclick="switchTab(this,'convo')">Conversation</button>
+            <button class="learn-tab" onclick="switchTab(this,'recall')">Story recall</button>
+          </div>
+        </div>
+        <div class="learn-progress-row">
+          <span class="learn-progress-label">Session progress</span>
+          <div class="learn-progress-track"><div class="learn-progress-fill" id="progress-fill"></div></div>
+          <span class="learn-xp" id="xp-label">140 xp</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="learn-body">
+      <!-- Sidebar: module list -->
+      <div class="learn-sidebar">
+        <div class="learn-sidebar-label">Today's path</div>
+        <div class="learn-module active" onclick="setModule(this)">
+          <div class="learn-module-icon">💬</div>
+          <div class="learn-module-info">
+            <div class="learn-module-title">Haida — Raven words</div>
+            <div class="learn-module-meta">From: How Raven Stole…</div>
+          </div>
+        </div>
+        <div class="learn-module" onclick="setModule(this)">
+          <div class="learn-module-icon">🌿</div>
+          <div class="learn-module-info">
+            <div class="learn-module-title">Seasons in Ojibwe</div>
+            <div class="learn-module-meta">86 phrases · beginner</div>
+          </div>
+          <div class="learn-module-check">✓</div>
+        </div>
+        <div class="learn-module" onclick="setModule(this)">
+          <div class="learn-module-icon">🍲</div>
+          <div class="learn-module-info">
+            <div class="learn-module-title">Three Sisters — vocab</div>
+            <div class="learn-module-meta">From: Harvest Stew recipe</div>
+          </div>
+        </div>
+        <div class="learn-module" onclick="setModule(this)">
+          <div class="learn-module-icon">🎵</div>
+          <div class="learn-module-info">
+            <div class="learn-module-title">Water Song phrases</div>
+            <div class="learn-module-meta">From: Morning Water Song</div>
+          </div>
+        </div>
+        <div class="learn-module" onclick="setModule(this)">
+          <div class="learn-module-icon">🔥</div>
+          <div class="learn-module-info">
+            <div class="learn-module-title">Ceremony concepts</div>
+            <div class="learn-module-meta">Lakota · intermediate</div>
+          </div>
+        </div>
+        <div style="height:1px;background:var(--border);margin:10px 16px;"></div>
+        <div class="learn-sidebar-label">Suggested next</div>
+        <div class="learn-module" onclick="setModule(this)">
+          <div class="learn-module-icon">📖</div>
+          <div class="learn-module-info">
+            <div class="learn-module-title">Cree trickster cycle</div>
+            <div class="learn-module-meta">New · 12 phrases</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main learning area -->
+      <div class="learn-main">
+
+        <!-- TAB: VOCABULARY (flashcards) -->
+        <div id="tab-vocab">
+          <div class="activity-card">
+            <div class="activity-header">
+              <span class="activity-badge vocab">Vocabulary</span>
+              <span class="activity-title">Haida words from Raven</span>
+              <span class="activity-source">sourced from: How Raven Stole the Light</span>
+            </div>
+            <div class="flashcard-wrap" onclick="flipCard()">
+              <div class="flashcard" id="flashcard">
+                <div class="fc-face fc-front">
+                  <div class="fc-phrase" id="fc-phrase">Yáahl</div>
+                  <div class="fc-hint">tap to reveal</div>
+                </div>
+                <div class="fc-face fc-back">
+                  <div class="fc-translation" id="fc-translation">Raven</div>
+                  <div class="fc-pronunciation" id="fc-pronunciation">yahl</div>
+                  <div class="fc-context" id="fc-context">The transformer and trickster at the heart of Haida creation stories</div>
+                </div>
+              </div>
+            </div>
+            <div class="fc-nav">
+              <button onclick="prevCard()">← Skip</button>
+              <span class="fc-counter" id="fc-counter">Card 1 of 6</span>
+              <button class="fc-knew" onclick="nextCard()">I knew this ✓</button>
+            </div>
+          </div>
+          <div class="activity-card" style="background:var(--cream);border-style:dashed;">
+            <div style="font-size:12px;color:var(--muted);line-height:1.6;">
+              <strong style="color:var(--bark);font-size:13px;">How this works</strong><br>
+              adi's AI extracts vocabulary directly from archived stories, songs, and recipes — so every word you learn is grounded in living cultural context, not a textbook. As the archive grows, so does your learning material.
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: CULTURAL QUIZ -->
+        <div id="tab-quiz" style="display:none">
+          <div class="activity-card">
+            <div class="activity-header">
+              <span class="activity-badge quiz">Cultural quiz</span>
+              <span class="activity-title">Meaning in context</span>
+              <span class="activity-source">sourced from: Three Sisters recipe</span>
+            </div>
+            <p class="quiz-question">"The Three Sisters are planted together because they help each other grow — corn provides the stalk, beans fix nitrogen, squash shades the soil. In Haudenosaunee understanding, this is called <em>___</em>."</p>
+            <div class="quiz-options">
+              <button class="quiz-opt" onclick="answerQuiz(this, false)">Ohén:ton — giving thanks before a meal</button>
+              <button class="quiz-opt" onclick="answerQuiz(this, true)">The Three Sisters teaching — interdependence as instruction</button>
+              <button class="quiz-opt" onclick="answerQuiz(this, false)">Kanien'kéha — the language of the Mohawk</button>
+              <button class="quiz-opt" onclick="answerQuiz(this, false)">Nibi — the word for water in Anishinaabe</button>
+            </div>
+            <div class="quiz-feedback" id="quiz-feedback">
+              <strong>That's right.</strong> The Three Sisters aren't just a farming method — they're a lesson in reciprocity. Haudenosaunee oral tradition uses this relationship as a model for how communities should care for one another. This cultural teaching is embedded in the harvest stew recipe archived in adi.
+            </div>
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <button class="action-btn" onclick="nextQuiz()">Next question →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: AI CONVERSATION -->
+        <div id="tab-convo" style="display:none">
+          <div class="activity-card">
+            <div class="activity-header">
+              <span class="activity-badge convo">AI conversation</span>
+              <span class="activity-title">Practice with an AI trained on the archive</span>
+            </div>
+            <div class="convo-context">
+              You are practising a morning greeting in Anishinaabe, drawn from phrases in the <em>Morning Water Song</em> recording. The AI will guide you using only language from verified archive entries.
+            </div>
+            <div class="convo-thread" id="convo-thread">
+              <div class="msg ai">
+                <div class="msg-label">adi guide</div>
+                <span class="msg-lang">Aaniin! Aaniin ezhi-ayaayin?</span>
+                Hello! How are you this morning? — Try responding in Anishinaabe, or ask me what it means.
+              </div>
+              <div class="msg user">
+                <div class="msg-label">you</div>
+                What does "Aaniin" mean exactly?
+              </div>
+              <div class="msg ai">
+                <div class="msg-label">adi guide</div>
+                <span class="msg-lang">Aaniin</span> is a greeting — it literally means something like "how is it?" or "what is the way of it?" It's used the way you'd say "hello" or "good morning." Elder Rose Swifthawk uses it at the opening of the Water Song recording. Want to try saying it back?
+              </div>
+            </div>
+            <div class="convo-input-row">
+              <input class="convo-input" id="convo-input" placeholder="Type in English or Anishinaabe…" onkeydown="if(event.key==='Enter')sendMsg()" />
+              <button class="convo-send" onclick="sendMsg()">Send →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: STORY RECALL -->
+        <div id="tab-recall" style="display:none">
+          <div class="activity-card">
+            <div class="activity-header">
+              <span class="activity-badge story">Story recall</span>
+              <span class="activity-title">Rebuild the story</span>
+              <span class="activity-source">sourced from: How Raven Stole the Light</span>
+            </div>
+            <p class="recall-passage">
+              Raven transformed himself into a
+              <span class="recall-blank" id="blank-0" onclick="fillBlank(0)"></span>
+              and floated down the river. The chief's daughter swallowed him and Raven was born into the house. He cried until the chief gave him
+              <span class="recall-blank" id="blank-1" onclick="fillBlank(1)"></span>
+              to play with — then burst through the
+              <span class="recall-blank" id="blank-2" onclick="fillBlank(2)"></span>
+              and released the
+              <span class="recall-blank" id="blank-3" onclick="fillBlank(3)"></span>
+              across the sky.
+            </p>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:10px;letter-spacing:0.05em;text-transform:uppercase;">Word bank — tap to place</div>
+            <div class="recall-word-bank" id="word-bank">
+              <div class="word-chip" onclick="selectWord(this,'smoke hole')">smoke hole</div>
+              <div class="word-chip" onclick="selectWord(this,'spruce needle')">spruce needle</div>
+              <div class="word-chip" onclick="selectWord(this,'stars')">stars</div>
+              <div class="word-chip" onclick="selectWord(this,'the first box')">the first box</div>
+              <div class="word-chip" onclick="selectWord(this,'cedar bark')">cedar bark</div>
+              <div class="word-chip" onclick="selectWord(this,'moonlight')">moonlight</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <button class="check-btn" onclick="checkRecall()">Check answers</button>
+              <button class="action-btn" style="flex:none;padding:9px 16px" onclick="resetRecall()">Reset</button>
+              <span style="font-size:12px;color:var(--muted)" id="recall-score"></span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -834,6 +1308,181 @@
   function selectType(el) {
     document.querySelectorAll('.type-option').forEach(o => o.classList.remove('selected'));
     el.classList.add('selected');
+  }
+
+  /* ── LEARN SCREEN ── */
+
+  function switchTab(btn, tab) {
+    document.querySelectorAll('.learn-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    ['vocab','quiz','convo','recall'].forEach(function(t) {
+      var el = document.getElementById('tab-' + t);
+      if (el) el.style.display = (t === tab) ? 'block' : 'none';
+    });
+  }
+
+  function setModule(el) {
+    document.querySelectorAll('.learn-module').forEach(m => m.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  /* Flashcards */
+  var cards = [
+    { phrase: 'Yáahl', translation: 'Raven', pronunciation: 'yahl', context: 'The transformer and trickster at the heart of Haida creation stories' },
+    { phrase: 'Jáadee k\'ínid\'áan', translation: 'The light is coming', pronunciation: 'yaa-dee k\'ee-nee-daan', context: 'Spoken at dawn — from the Raven story' },
+    { phrase: 'K\'aayyángs', translation: 'Trickster', pronunciation: 'k\'aay-yangs', context: 'Another name for Raven in his role as transformer' },
+    { phrase: 'Nibi', translation: 'Water', pronunciation: 'ni-bee', context: 'From the Morning Water Song — Anishinaabe' },
+    { phrase: 'Aaniin', translation: 'Hello / How is it?', pronunciation: 'ah-neen', context: 'Anishinaabe greeting used to open the Water Song ceremony' },
+    { phrase: 'Ohén:ton', translation: 'Words before all else', pronunciation: 'oh-en-ton', context: 'The opening of the Haudenosaunee Thanksgiving Address before preparing food' }
+  ];
+  var cardIdx = 0;
+  var xp = 140;
+
+  function renderCard() {
+    var c = cards[cardIdx];
+    document.getElementById('fc-phrase').textContent = c.phrase;
+    document.getElementById('fc-translation').textContent = c.translation;
+    document.getElementById('fc-pronunciation').textContent = c.pronunciation;
+    document.getElementById('fc-context').textContent = c.context;
+    document.getElementById('fc-counter').textContent = 'Card ' + (cardIdx + 1) + ' of ' + cards.length;
+    var fc = document.getElementById('flashcard');
+    fc.classList.remove('flipped');
+  }
+
+  function flipCard() {
+    document.getElementById('flashcard').classList.toggle('flipped');
+  }
+
+  function nextCard() {
+    xp += 10;
+    updateXP();
+    cardIdx = (cardIdx + 1) % cards.length;
+    renderCard();
+  }
+
+  function prevCard() {
+    cardIdx = (cardIdx - 1 + cards.length) % cards.length;
+    renderCard();
+  }
+
+  function updateXP() {
+    document.getElementById('xp-label').textContent = xp + ' xp';
+    var pct = Math.min(100, Math.round((xp / 500) * 100));
+    document.getElementById('progress-fill').style.width = pct + '%';
+  }
+
+  /* Quiz */
+  function answerQuiz(btn, correct) {
+    document.querySelectorAll('.quiz-opt').forEach(function(o) { o.disabled = true; });
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    if (correct) {
+      xp += 20;
+      updateXP();
+      document.getElementById('quiz-feedback').classList.add('visible');
+    }
+  }
+
+  function nextQuiz() {
+    document.querySelectorAll('.quiz-opt').forEach(function(o) { o.disabled = false; o.classList.remove('correct','wrong'); });
+    document.getElementById('quiz-feedback').classList.remove('visible');
+  }
+
+  /* Conversation */
+  var convoReplies = [
+    { lang: 'Aaniin!', body: 'That\'s it! Aaniin is the perfect greeting. Now try: <em>Mii gwetch</em> — can you guess what it means?' },
+    { lang: 'Mii gwetch', body: 'It means "thank you." It comes up often in ceremony and in the Water Song. The archive has 14 recorded uses of this phrase across different entries.' },
+    { lang: 'Aaniish naa?', body: 'Aaniish naa means "How are things?" — very close to Aaniin. These short phrases are the building blocks. Ready to try a full sentence from the Water Song?' }
+  ];
+  var convoTurn = 0;
+
+  function sendMsg() {
+    var input = document.getElementById('convo-input');
+    var text = input.value.trim();
+    if (!text) return;
+    var thread = document.getElementById('convo-thread');
+
+    var userMsg = document.createElement('div');
+    userMsg.className = 'msg user';
+    userMsg.innerHTML = '<div class="msg-label">you</div>' + text;
+    thread.appendChild(userMsg);
+    input.value = '';
+
+    var typing = document.createElement('div');
+    typing.className = 'typing-indicator';
+    typing.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+    thread.appendChild(typing);
+    thread.scrollTop = thread.scrollHeight;
+
+    var reply = convoReplies[convoTurn % convoReplies.length];
+    convoTurn++;
+    setTimeout(function() {
+      thread.removeChild(typing);
+      var aiMsg = document.createElement('div');
+      aiMsg.className = 'msg ai';
+      aiMsg.innerHTML = '<div class="msg-label">adi guide</div><span class="msg-lang">' + reply.lang + '</span>' + reply.body;
+      thread.appendChild(aiMsg);
+      thread.scrollTop = thread.scrollHeight;
+      xp += 15;
+      updateXP();
+    }, 1400);
+  }
+
+  /* Story recall */
+  var answers = ['spruce needle', 'the first box', 'smoke hole', 'stars'];
+  var filled = ['', '', '', ''];
+  var selectedWord = null;
+
+  function selectWord(chip, word) {
+    selectedWord = word;
+    document.querySelectorAll('.word-chip').forEach(function(c) { c.style.outline = 'none'; });
+    chip.style.outline = '2px solid var(--ochre)';
+    chip.style.outlineOffset = '2px';
+  }
+
+  function fillBlank(idx) {
+    if (!selectedWord) return;
+    var prev = filled[idx];
+    filled[idx] = selectedWord;
+    var blank = document.getElementById('blank-' + idx);
+    blank.textContent = selectedWord;
+    blank.classList.add('filled');
+    blank.classList.remove('correct');
+    document.querySelectorAll('.word-chip').forEach(function(c) {
+      if (c.textContent === selectedWord) { c.classList.add('used'); }
+      if (prev && c.textContent === prev) { c.classList.remove('used'); }
+      c.style.outline = 'none';
+    });
+    selectedWord = null;
+    document.getElementById('recall-score').textContent = '';
+  }
+
+  function checkRecall() {
+    var correct = 0;
+    for (var i = 0; i < 4; i++) {
+      var blank = document.getElementById('blank-' + i);
+      if (filled[i].toLowerCase() === answers[i].toLowerCase()) {
+        blank.classList.add('correct');
+        correct++;
+      } else if (filled[i]) {
+        blank.style.borderColor = '#C4542A';
+      }
+    }
+    xp += correct * 15;
+    updateXP();
+    document.getElementById('recall-score').textContent = correct + ' / 4 correct';
+  }
+
+  function resetRecall() {
+    filled = ['', '', '', ''];
+    selectedWord = null;
+    for (var i = 0; i < 4; i++) {
+      var blank = document.getElementById('blank-' + i);
+      blank.textContent = '';
+      blank.classList.remove('filled', 'correct');
+      blank.style.borderColor = '';
+    }
+    document.querySelectorAll('.word-chip').forEach(function(c) { c.classList.remove('used'); c.style.outline = 'none'; });
+    document.getElementById('recall-score').textContent = '';
   }
 </script>
 </body>
